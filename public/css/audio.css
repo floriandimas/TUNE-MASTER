@@ -1,0 +1,1055 @@
+/* ==========================================================
+   GENERAL
+========================================================== */
+
+body{
+    margin:0;
+    padding:0;
+    font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
+    background:#e0e0e0;
+    color:#2d3748;
+}
+
+/* Container Bootstrap */
+
+.container{
+
+    width:95%;
+
+    max-width:1700px;
+
+    margin:auto;
+
+}
+
+/* ==========================================================
+   HERO HEADER
+========================================================== */
+
+.hero-header{
+
+    background:linear-gradient(
+        135deg,
+        #0d6efd 0%,
+        #3b82f6 100%
+    );
+
+    border-bottom-left-radius:35px;
+    border-bottom-right-radius:35px;
+
+    padding-bottom:20px;
+
+    margin-bottom:30px;
+}
+
+.hero-header h1{
+
+    font-weight:700;
+    letter-spacing:.5px;
+}
+
+.hero-header p{
+
+    opacity:.95;
+    max-width:650px;
+}
+
+.hero-header .badge{
+
+    font-size:.8rem;
+    padding:.6rem 1rem;
+    border-radius:30px;
+}
+
+.hero-icon{
+
+    font-size:150px;
+
+    opacity:.18;
+
+    margin-right:40px;
+    color:rgba(255,255,255);
+}
+
+/* ==========================================================
+   TYPOGRAPHY
+========================================================== */
+
+h1,h2,h3,h4,h5,h6{
+
+    font-weight:600;
+}
+
+small{
+
+    font-size:.82rem;
+}
+
+/* ==========================================================
+   ACCORDION
+========================================================== */
+
+.accordion{
+
+    --bs-accordion-border-width:0;
+    --bs-accordion-bg:transparent;
+    --bs-accordion-border-radius:22px;
+}
+
+.accordion-item{
+
+    border:none !important;
+    border-radius:22px !important;
+    overflow:hidden;
+
+    background:#ffffff;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,.08);
+
+    transition:.25s ease;
+}
+
+.accordion-item:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 16px 35px rgba(15,23,42,.10);
+}
+
+/* ==========================================================
+   ACCORDION HEADER
+========================================================== */
+
+.accordion-button{
+
+    background:#ffffff !important;
+
+    padding:20px 25px;
+
+    border:none;
+
+    box-shadow:none !important;
+}
+
+.accordion-button:not(.collapsed){
+
+    background:#eef5ff !important;
+
+    color:#0d6efd;
+}
+
+.accordion-button:focus{
+
+    box-shadow:none;
+}
+
+.accordion-button i{
+
+    font-size:1.35rem;
+    color:#0d6efd;
+}
+
+.accordion-button strong{
+
+    font-size:1.05rem;
+}
+
+.accordion-button small{
+
+    color:#6b7280;
+}
+
+/* Icon panah */
+
+.accordion-button::after{
+
+    transition:.25s;
+}
+
+/* ==========================================================
+   ACCORDION BODY
+========================================================== */
+
+.accordion-body{
+
+    background:#ffffff;
+
+    padding:35px;
+}
+
+/* ==========================================================
+   CARD
+========================================================== */
+
+.card{
+
+    border:none !important;
+
+    border-radius:22px;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.05);
+
+    transition:.25s;
+}
+
+.card:hover{
+
+    transform:translateY(-2px);
+}
+
+audio#audioOriginal {
+    border: var(--bs-border-width) var(--bs-border-style) #d6d6d6 !important;
+}
+
+div#vocalStatus {
+    border: var(--bs-border-width) var(--bs-border-style) #d6d6d6 !important;
+}
+
+audio#audioPlayback {
+    border: var(--bs-border-width) var(--bs-border-style) #d6d6d6 !important;
+}
+
+.lyrics-box {
+    border: var(--bs-border-width) var(--bs-border-style) #d6d6d6 !important;
+}
+
+canvas#waveform {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+}
+
+.card-body{
+
+    padding: 30px;
+    background-color: #dae8fb;
+    border-radius: 8px;
+    border: var(--bs-border-width) var(--bs-border-style) #94c9ff !important;
+}
+
+.card-body-inf{
+
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: var(--bs-border-width) var(--bs-border-style) #cecece !important;
+}
+
+.card-body-infs{
+
+    padding: 30px;
+    background-color: #ffffff;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border: var(--bs-border-width) var(--bs-border-style) #cecece !important;
+}
+
+/* ==========================================================
+   ALERT
+========================================================== */
+
+.alert{
+
+    border:none;
+
+    border-radius:15px;
+
+    padding:15px 18px;
+
+    font-size:.95rem;
+}
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+#status,
+#vocalStatus,
+#pitchStatus{
+
+    background:#eef5ff;
+
+    border-left:4px solid #0d6efd;
+
+    border-radius:12px;
+
+    padding:14px 18px;
+
+    font-weight:500;
+
+    color:#1e3a8a;
+
+    margin-top:15px;
+
+    transition:.25s;
+}
+
+/* ==========================================================
+   SEARCH
+========================================================== */
+
+.search-box input{
+
+    flex:1;
+
+    border:none;
+
+    background:#f8fafc;
+
+    padding:14px 16px;
+
+    border-radius:12px;
+
+    font-size:15px;
+
+    outline:none;
+
+    box-shadow:
+        inset 0 0 0 2px #0573f1;
+
+    transition:all .2s ease;
+}
+
+.search-box input:hover{
+
+    box-shadow:
+        inset 0 0 0 2px #9ec5fe;
+}
+
+.search-box input:focus{
+
+    background:#fff;
+
+    box-shadow:
+        inset 0 0 0 2px #0d6efd,
+        0 8px 20px rgba(13,110,253,.15);
+}
+
+input#searchInput {
+    width: 100%;
+
+    border: 2px solid #0d6efd !important;
+
+    background-color: #f5f7fa !important;
+
+    padding: 14px 16px;
+
+    border-radius: 12px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    box-shadow:
+        0 8px 20px rgba(13, 110, 253, 0.12) !important;
+
+    transition: all 0.2s ease;
+}
+
+input#searchInput:focus {
+    border-color: #0d6efd !important;
+
+    background-color: #ffffff !important;
+
+    box-shadow:
+        0 0 0 3px rgba(13, 110, 253, 0.15),
+        0 8px 20px rgba(13, 110, 253, 0.18) !important;
+}
+
+/* Tombol Cari */
+
+#btnSearch{
+
+    height:58px;
+
+    border-radius:16px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+    box-shadow:
+        0 8px 18px rgba(13,110,253,.25);
+}
+
+#btnSearch:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 12px 25px rgba(13,110,253,.35);
+}
+
+/* ==========================================================
+   HASIL PENCARIAN
+========================================================== */
+
+#results{
+
+    margin-top:20px;
+
+    padding:0;
+}
+
+#results li{
+
+    list-style:none;
+
+    background:#ffffff;
+
+    border-radius:18px;
+
+    margin-bottom:15px;
+
+    padding:18px 20px;
+
+    border:1px solid #edf2f7;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.05);
+
+    transition:.25s;
+}
+
+#results li:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 12px 28px rgba(0,0,0,.08);
+}
+
+/* tombol pilih bawaan JS */
+
+#results button{
+
+    float:right;
+
+    border:none;
+
+    outline:none;
+
+    box-shadow:none;
+
+    border-radius:12px;
+
+    padding:10px 20px;
+
+    font-size:.9rem;
+
+    font-weight:600;
+
+    color:#fff;
+
+    background:#0d6efd;
+
+    transition:.25s;
+
+}
+
+#results button:hover{
+
+    background:#0b5ed7;
+
+    color:#fff;
+
+    transform:translateY(-1px);
+
+}
+
+#results button:focus,
+
+#results button:active{
+
+    border:none;
+
+    outline:none;
+
+    box-shadow:none;
+
+}
+
+/* Membersihkan float */
+
+#results li::after{
+
+    content:"";
+
+    display:block;
+
+    clear:both;
+}
+
+.lyrics-box
+#lyricsReff,
+#lyricsFull{
+
+    white-space:pre-wrap;
+
+    font-family:inherit;
+
+    border:none;
+
+    background:transparent;
+
+    margin:0;
+
+    line-height:1.8;
+
+    font-size:15px;
+
+}
+
+/* ==========================================================
+   AUDIO PLAYER
+========================================================== */
+
+audio{
+
+    width:100%;
+
+    margin-top:10px;
+
+    border-radius:15px;
+
+    background:#f8fafc;
+}
+
+/* Card Audio */
+
+audio::-webkit-media-controls-panel{
+
+    background:#eef5ff;
+}
+
+audio::-webkit-media-controls-play-button{
+
+    border-radius:50%;
+}
+
+/* ==========================================================
+   PITCH BUTTON
+========================================================== */
+
+.pitch-group{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:18px;
+
+    margin-top:25px;
+}
+
+.pitch-group button{
+
+    position:relative;
+
+    width:70px;
+
+    height:70px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#ffffff;
+
+    color:#0d6efd;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.08);
+
+    transition:.25s;
+}
+
+.pitch-group button:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 15px 30px rgba(13,110,253,.20);
+}
+
+/* Key Rekomendasi */
+
+.pitch-group button.recommended{
+
+    background:#facc15;
+
+    color:#ffffff;
+
+    box-shadow:
+        0 10px 25px rgba(34,197,94,.35);
+}
+
+/* Key Dipilih */
+
+.pitch-group button.active{
+
+    background:#2563eb;
+
+    color:#ffffff;
+
+    transform:scale(1.08);
+
+    box-shadow:
+        0 12px 30px rgba(245,158,11,.35);
+}
+
+/* Key Referensi sekaligus Dipilih */
+
+.pitch-group button.recommended.active{
+
+    background:#2563eb;
+
+    color:#ffffff;
+
+    box-shadow:
+        0 12px 30px rgba(124,58,237,.40);
+}
+
+/* =======================================================
+   VISUALISASI ANALISIS NADA
+======================================================= */
+
+.range-diagram{
+
+    width:100%;
+
+    background:#ffffff;
+
+    border:1px solid #dee2e6;
+
+    border-radius:14px;
+
+    padding:18px;
+
+    overflow-x:auto;
+
+}
+
+.range-scale{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    font-size:11px;
+
+    color:#6c757d;
+
+    margin-bottom:18px;
+
+    user-select:none;
+
+}
+
+.range-row{
+
+    position:relative;
+
+    height:45px;
+
+    margin-bottom:18px;
+
+}
+
+.range-label{
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:80px;
+
+    font-weight:600;
+
+    color:#495057;
+
+}
+
+.range-track{
+
+    position:absolute;
+
+    left:90px;
+
+    right:0;
+
+    top:12px;
+
+    height:8px;
+
+    background:#e9ecef;
+
+    border-radius:999px;
+
+}
+
+.range-bar{
+
+    position:absolute;
+
+    top:0;
+
+    height:8px;
+
+    border-radius:999px;
+
+    transition:.35s;
+}
+
+/* ==========================
+   RENTANG LAGU SEBELUM
+========================== */
+
+.song-before{
+
+    background:#198754;
+
+}
+
+/* ==========================
+   RENTANG LAGU SESUDAH
+========================== */
+
+.song-after{
+
+    background:#ffc107;
+
+}
+
+/* ==========================
+   RENTANG VOKAL
+========================== */
+
+.vocal-range{
+
+    background:#0d6efd;
+
+}
+
+/* ==========================
+   CARD
+========================== */
+
+#beforeRangeDiagram,
+#afterRangeDiagram{
+
+    min-height:170px;
+
+}
+
+/* ==========================
+   CHART
+========================== */
+
+#pitchChart{
+
+    width:80% !important;
+
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media(max-width:768px){
+
+    .range-label{
+
+        width:65px;
+
+        font-size:12px;
+
+    }
+
+    .range-track{
+
+        left:70px;
+
+    }
+
+}
+
+/* ===========================
+   Original Key Badge
+=========================== */
+
+.original-badge{
+
+    position:absolute;
+
+    top:-7px;
+
+    right:-7px;
+
+    width:18px;
+
+    height:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    background:#6c757d;
+
+    color:#ffffff;
+
+    box-shadow:
+        0 4px 10px rgba(0,0,0,.18);
+
+    cursor:default;
+}
+
+/* ==========================================================
+   INFORMASI PERSONASLISASI
+========================================================== */
+
+#pitchStatus{
+
+    margin-top:25px;
+
+    font-weight:600;
+}
+
+/* ===========================
+   LYRICS
+=========================== */
+
+.lyrics-box{
+
+    background:#f8f9fa;
+
+    border:1px solid #dee2e6;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    max-height:420px;
+
+    overflow-y:auto;
+
+    line-height:1.9;
+
+    font-size:15px;
+
+    white-space:normal;
+
+}
+
+#lyricsReff{
+
+    white-space:pre-line;
+
+}
+
+#lyricsFull{
+
+    white-space:normal;
+    border: none !important;
+}
+
+.normal-lyric{
+
+    opacity:.55;
+
+    transition:.3s;
+
+    padding:10px 0;
+
+    font-size:16px;
+
+    font-weight: bold;
+
+}
+
+.active-lyric{
+
+    opacity:1;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#0d6efd;
+
+    transition:.3s;
+
+    padding:10px 0;
+
+}
+
+#results li.search-result-item{
+    position:relative;
+}
+
+#results li.search-result-item.selected{
+    border:2px solid #0d6efd;
+    background:#f4f8ff;
+    box-shadow:0 10px 25px rgba(13,110,253,.15);
+}
+
+.badge-selected{
+    position:absolute;
+
+    top:-10px;
+    right:-10px;
+
+    width:30px;
+    height:30px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+    border:3px solid #ffffff;
+
+    background:#0d6efd;
+    color:#ffffff;
+
+    font-size:13px;
+
+    box-shadow:
+        0 5px 14px rgba(13,110,253,.35);
+
+    z-index:5;
+}
+
+/* ==========================================================
+   VISUALISASI VALIDASI KEY
+========================================================== */
+
+.visualization-chart-container{
+    position:relative;
+
+    width:100%;
+    height:330px;
+
+    padding:10px;
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+}
+
+.visualization-chart-container canvas{
+    width:100% !important;
+    height:100% !important;
+}
+
+#visualValidationStatus.validation-success{
+    color:#198754 !important;
+}
+
+#visualValidationStatus.validation-warning{
+    color:#fd7e14 !important;
+}
+
+#visualValidationStatus.validation-failed{
+    color:#dc3545 !important;
+}
+
+#chromaValidationAlert.validation-success{
+    background:#e8f7ee;
+    color:#146c43;
+
+    border-color:#b7e4c7 !important;
+}
+
+#chromaValidationAlert.validation-warning{
+    background:#fff8e1;
+    color:#997404;
+
+    border-color:#ffe69c !important;
+}
+
+#chromaValidationAlert.validation-failed{
+    background:#f8d7da;
+    color:#842029;
+
+    border-color:#f5c2c7 !important;
+}
+
+@media(max-width:768px){
+
+    .visualization-chart-container{
+        height:280px;
+    }
+
+}
+
+/* ======================================================
+   FLOATING HISTORY MENU
+====================================================== */
+
+.history-floating-menu {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1055;
+}
+
+.history-floating-button {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    font-size: 18px;
+}
+
+.history-floating-button:hover {
+    transform: translateY(-2px);
+}
+
+.history-floating-menu .dropdown-menu {
+    min-width: 230px;
+    border-radius: 14px;
+    padding: 8px;
+}
+
+.history-floating-menu .dropdown-item {
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+@media (max-width: 576px) {
+    .history-floating-menu {
+        top: 12px;
+        left: 12px;
+    }
+
+    .history-floating-button {
+        width: 44px;
+        height: 44px;
+    }
+}

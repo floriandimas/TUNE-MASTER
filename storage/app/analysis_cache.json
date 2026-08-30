@@ -1,0 +1,33 @@
+{
+    "audio_04d6d976de965ca3685479fdc532dbce.mp3": {
+        "informasi_lagu": {
+            "key": "G#",
+            "confidence": 0.9504784028567898,
+            "range": "G2 - G3",
+            "highest_note": "G3",
+            "lowest_note": "G2"
+        },
+        "informasi_vokal": {
+            "range": "C#2 - A3",
+            "highest_note": "A3",
+            "lowest_note": "C#2"
+        },
+        "hasil_rekomendasi": {
+            "transpose": -1,
+            "key_rekomendasi": "G",
+            "key_hasil_pitch": "G"
+        },
+        "validasi_original": {
+            "fals": 86.22222222222223,
+            "within_1_semitone": 13.777777777777779,
+            "pitch_offset": -2.299999999999997,
+            "time_offset": -3.3845
+        },
+        "validasi_recommended": {
+            "fals": 23.529411764705884,
+            "within_1_semitone": 76.47058823529412,
+            "pitch_offset": 0.10000000000000142,
+            "time_offset": -20.6365
+        }
+    }
+}
