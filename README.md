@@ -57,3 +57,59 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Python Setup (venv, no yt-dlp.exe)
+
+This project downloads YouTube audio via Python module `yt-dlp` in `python/download_audio.py`.
+
+1. Create and activate a virtual environment:
+
+    ```bash
+    python -m venv .venv
+    .venv\Scripts\activate
+    ```
+
+2. Install Python dependencies:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3. Ensure FFmpeg is installed and available in your `PATH`.
+
+4. Set Python binary in `.env`:
+
+    ```env
+    PYTHON_BIN=.venv/Scripts/python.exe
+    YOUTUBE_DOWNLOAD_MODE=mp3
+    ```
+
+    If ffmpeg is not available on the Linux server, switch to original stream mode:
+
+    ```env
+    YOUTUBE_DOWNLOAD_MODE=original
+    ```
+
+    That mode avoids ffmpeg conversion, but the saved file will be the original YouTube audio container such as `webm` or `m4a`.
+
+    If ffmpeg exists but is installed in a custom location, set:
+
+    ```env
+    FFMPEG_LOCATION=/path/to/ffmpeg/bin
+    ```
+
+    In `mp3` mode, every fetched audio file is stored on the server under `storage/app/public` and exposed through `public/storage`, so disk usage will grow as users download more songs. Plan a cleanup policy if the server storage is limited.
+
+    The app now schedules `audio:cleanup-old-files --days=30` daily at 03:00 to remove old audio files, but the server still needs Laravel scheduler support. On Linux, add a cron entry like:
+
+    ```cron
+    * * * * * cd /path/to/TUNE-MASTER && php artisan schedule:run >> /dev/null 2>&1
+    ```
+
+    If your deployment does not use Laravel's scheduler, run the cleanup command manually or from your own cron job.
+
+5. Reload Laravel config:
+
+    ```bash
+    php artisan config:clear
+    ```

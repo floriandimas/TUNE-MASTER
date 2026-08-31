@@ -39,4 +39,13 @@ return [
         'key' => env('YOUTUBE_API_KEY'),
     ],
 
+    'python' => [
+        'bin' => env('PYTHON_BIN', 'python'),
+    ],
+
+    'youtube_download' => [
+        'mode' => env('YOUTUBE_DOWNLOAD_MODE', 'mp3'),
+        'ffmpeg_location' => env('FFMPEG_LOCATION'),
+    ],
+
 ];

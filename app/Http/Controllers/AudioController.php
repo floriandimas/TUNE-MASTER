@@ -75,7 +75,10 @@ class AudioController extends Controller
         $title = trim((string) ($validated['title'] ?? ''));
         $channelTitle = trim((string) ($validated['channelTitle'] ?? ''));
 
-        $filename = 'audio_' . md5($videoId) . '.mp3';
+        $downloadMode = (string) config('services.youtube_download.mode', 'mp3');
+        $ffmpegLocation = (string) config('services.youtube_download.ffmpeg_location', '');
+        $defaultExtension = $downloadMode === 'original' ? 'webm' : 'mp3';
+        $filename = 'audio_' . md5($videoId) . '.' . $defaultExtension;
         $fullPath = storage_path('app/public/' . $filename);
 
         try {
@@ -87,13 +90,17 @@ class AudioController extends Controller
 
             if (!file_exists($fullPath)) {
                 $url = 'https://www.youtube.com/watch?v=' . $videoId;
-                $ytDlp = base_path('yt-dlp.exe');
+                $python = (string) config('services.python.bin', 'python');
+                $script = base_path('python/download_audio.py');
 
                 $command = sprintf(
-                    '"%s" -x --audio-format mp3 -o "%s" "%s" 2>&1',
-                    $ytDlp,
-                    $fullPath,
-                    $url
+                    '%s %s %s %s %s %s 2>&1',
+                    escapeshellcmd($python),
+                    escapeshellarg($script),
+                    escapeshellarg($url),
+                    escapeshellarg($fullPath),
+                    escapeshellarg($downloadMode),
+                    escapeshellarg($ffmpegLocation)
                 );
 
                 $output = [];
@@ -101,18 +108,32 @@ class AudioController extends Controller
 
                 exec($command, $output, $exitCode);
 
-                if (!file_exists($fullPath)) {
+                $rawOutput = implode("\n", $output);
+                $downloadResult = json_decode($rawOutput, true);
+
+                $downloadedPath = data_get($downloadResult, 'path', $fullPath);
+
+                if (!file_exists($downloadedPath)) {
                     Log::error('Download audio gagal', [
                         'video_id' => $videoId,
                         'exit_code' => $exitCode,
                         'output' => $output,
+                        'download_result' => $downloadResult,
+                        'downloaded_path' => $downloadedPath,
                     ]);
 
                     return response()->json([
                         'success' => false,
-                        'error' => 'Download audio gagal.',
+                        'error' => data_get(
+                            $downloadResult,
+                            'error',
+                            'Download audio gagal. Pastikan modul Python yt-dlp dan ffmpeg tersedia.'
+                        ),
                     ], 500);
                 }
+
+                $fullPath = $downloadedPath;
+                $filename = basename($downloadedPath);
             }
 
             /*
@@ -158,7 +179,7 @@ class AudioController extends Controller
             ], 500);
         }
     }
-    
+
     public function detectKey(Request $request)
     {
         set_time_limit(300);
@@ -313,13 +334,13 @@ class AudioController extends Controller
             json_encode(
                 $cache,
                 JSON_PRETTY_PRINT |
-                JSON_UNESCAPED_UNICODE
+                    JSON_UNESCAPED_UNICODE
             )
         );
 
         return response()->json($result);
     }
-        
+
     public function transpose(Request $request)
     {
         set_time_limit(300);
@@ -365,7 +386,7 @@ class AudioController extends Controller
         $fullPath =
             storage_path(
                 'app/public/' .
-                $filename
+                    $filename
             );
 
         /*
@@ -374,21 +395,19 @@ class AudioController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if(!file_exists($fullPath))
-        {
+        if (!file_exists($fullPath)) {
             return response()->json([
                 'success' => false,
 
                 'message' =>
-                    'File audio input tidak ditemukan.',
+                'File audio input tidak ditemukan.',
 
                 'filename' =>
-                    $filename
+                $filename
             ], 404);
         }
 
-        try
-        {
+        try {
             /*
             |--------------------------------------------------------------------------
             | Jalankan Python pitch shifting
@@ -435,22 +454,21 @@ class AudioController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            if(
+            if (
                 !$data ||
                 !($data['success'] ?? false)
-            )
-            {
-                \Log::error(
+            ) {
+                Log::error(
                     'Pitch shifting gagal',
                     [
                         'input' =>
-                            $filename,
+                        $filename,
 
                         'transpose' =>
-                            $semitone,
+                        $semitone,
 
                         'raw_output' =>
-                            $output
+                        $output
                     ]
                 );
 
@@ -458,10 +476,10 @@ class AudioController extends Controller
                     'success' => false,
 
                     'message' =>
-                        'Pitch shifting gagal.',
+                    'Pitch shifting gagal.',
 
                     'raw' =>
-                        $output
+                    $output
                 ], 500);
             }
 
@@ -486,29 +504,27 @@ class AudioController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            try
-            {
+            try {
                 $lagu = Lagu::where(
                     'path_file',
                     $filename
                 )->first();
 
-                if($lagu)
-                {
+                if ($lagu) {
                     $hasilPitch = HasilPitch::updateOrCreate(
                         [
                             'lagu_id' =>
-                                $lagu->id_lagu,
+                            $lagu->id_lagu,
 
                             'transpose' =>
-                                $semitone
+                            $semitone
                         ],
                         [
                             'key_hasil' =>
-                                $targetKey,
+                            $targetKey,
 
                             'path_pitch' =>
-                                $pitchFilename
+                            $pitchFilename
                         ]
                     );
 
@@ -520,59 +536,48 @@ class AudioController extends Controller
                             'visitor_id'
                         );
 
-                    if($visitorId)
-                    {
+                    if ($visitorId) {
                         HasilAnalisis::create([
                             'visitor_id' =>
-                                $visitorId,
+                            $visitorId,
 
                             'lagu_id' =>
-                                $lagu->id_lagu,
+                            $lagu->id_lagu,
 
                             'hasil_pitch_id' =>
-                                $hasilPitch->id_pitch,
+                            $hasilPitch->id_pitch,
 
                             'key_rekomendasi' =>
-                                $validated[
-                                    'recommended_key'
-                                ] ?? null,
+                            $validated['recommended_key'] ?? null,
 
                             'transpose' =>
-                                $semitone,
+                            $semitone,
 
                             'nada_terendah_vokal' =>
-                                $validated[
-                                    'vocal_lowest'
-                                ] ?? null,
+                            $validated['vocal_lowest'] ?? null,
 
                             'nada_tertinggi_vokal' =>
-                                $validated[
-                                    'vocal_highest'
-                                ] ?? null
+                            $validated['vocal_highest'] ?? null
                         ]);
                     }
-                }
-                else
-                {
+                } else {
                     Log::warning(
                         'Riwayat pitch tidak disimpan karena data lagu tidak ditemukan.',
                         [
                             'filename' =>
-                                $filename
+                            $filename
                         ]
                     );
                 }
-            }
-            catch(\Throwable $databaseError)
-            {
+            } catch (\Throwable $databaseError) {
                 Log::warning(
                     'Pitch shifting berhasil tetapi penyimpanan riwayat gagal.',
                     [
                         'filename' =>
-                            $filename,
+                        $filename,
 
                         'message' =>
-                            $databaseError->getMessage()
+                        $databaseError->getMessage()
                     ]
                 );
             }
@@ -587,45 +592,39 @@ class AudioController extends Controller
                 'success' => true,
 
                 'input_file' =>
-                    $filename,
+                $filename,
 
                 'output_file' =>
-                    $pitchFilename,
+                $pitchFilename,
 
                 'path' =>
-                    asset(
-                        'storage/' .
+                asset(
+                    'storage/' .
                         $pitchFilename
-                    ),
+                ),
 
                 'transpose' =>
-                    $data['transpose']
+                $data['transpose']
                     ?? $semitone,
 
                 'target_key' =>
-                    $targetKey,
+                $targetKey,
 
                 'original_chromagram' =>
-                    $data[
-                        'original_chromagram'
-                    ] ?? [],
+                $data['original_chromagram'] ?? [],
 
                 'shifted_chromagram' =>
-                    $data[
-                        'shifted_chromagram'
-                    ] ?? []
+                $data['shifted_chromagram'] ?? []
             ]);
-        }
-        catch(\Throwable $error)
-        {
-            \Log::error(
+        } catch (\Throwable $error) {
+            Log::error(
                 'Transpose error',
                 [
                     'filename' =>
-                        $filename,
+                    $filename,
 
                     'message' =>
-                        $error->getMessage()
+                    $error->getMessage()
                 ]
             );
 
@@ -633,11 +632,11 @@ class AudioController extends Controller
                 'success' => false,
 
                 'message' =>
-                    'Terjadi kesalahan saat proses pitch shifting.'
+                'Terjadi kesalahan saat proses pitch shifting.'
             ], 500);
         }
     }
-    
+
     public function detectVocal(Request $request)
     {
         set_time_limit(300);
@@ -736,7 +735,6 @@ class AudioController extends Controller
                 "success" => false,
                 "error" => "Python tidak mengembalikan data"
             ], 500);
-
         }
 
         /*
@@ -756,7 +754,6 @@ class AudioController extends Controller
                 "error" => "JSON tidak valid",
                 "raw" => $output
             ], 500);
-
         }
 
         /*
@@ -783,7 +780,7 @@ class AudioController extends Controller
 
         return response()->json($data);
     }
-    
+
     public function recommendation(Request $request)
     {
         set_time_limit(300);
@@ -819,13 +816,13 @@ class AudioController extends Controller
                 true
             );
 
-        if(
+        if (
             !$data ||
             !($data["success"] ?? false)
-        ){
+        ) {
             return response()->json([
-                "error"=>"Recommendation gagal"
-            ],500);
+                "error" => "Recommendation gagal"
+            ], 500);
         }
 
         return response()->json($data);
@@ -857,7 +854,7 @@ class AudioController extends Controller
             json_encode(
                 $cache,
                 JSON_PRETTY_PRINT |
-                JSON_UNESCAPED_UNICODE
+                    JSON_UNESCAPED_UNICODE
             )
         );
 

@@ -32,3 +32,9 @@ Thumbs.db
 
 # Cache database lokal
 /storage/app/*.sqlite
+
+# Python virtual environment and caches
+/.venv/
+/venv/
+**/__pycache__/
+*.pyc
