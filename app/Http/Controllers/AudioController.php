@@ -90,12 +90,11 @@ class AudioController extends Controller
 
             if (!file_exists($fullPath)) {
                 $url = 'https://www.youtube.com/watch?v=' . $videoId;
-                $python = (string) config('services.python.bin', 'python');
                 $script = base_path('python/download_audio.py');
 
                 $command = sprintf(
                     '%s %s %s %s %s %s 2>&1',
-                    escapeshellcmd($python),
+                    escapeshellcmd($this->pythonBinary()),
                     escapeshellarg($script),
                     escapeshellarg($url),
                     escapeshellarg($fullPath),
@@ -127,7 +126,9 @@ class AudioController extends Controller
                         'error' => data_get(
                             $downloadResult,
                             'error',
-                            'Download audio gagal. Pastikan modul Python yt-dlp dan ffmpeg tersedia.'
+                            trim($rawOutput) !== ''
+                                ? trim($rawOutput)
+                                : 'Download audio gagal. Pastikan modul Python yt-dlp dan ffmpeg tersedia.'
                         ),
                     ], 500);
                 }
@@ -242,12 +243,11 @@ class AudioController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $python = 'python';
         $script = base_path('python/key_detection.py');
 
         $command = sprintf(
             '%s %s %s',
-            escapeshellcmd($python),
+            escapeshellcmd($this->pythonBinary()),
             escapeshellarg($script),
             escapeshellarg($fullPath)
         );
@@ -414,8 +414,7 @@ class AudioController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $python =
-                'python';
+            $python = $this->pythonBinary();
 
             $script =
                 base_path(
@@ -719,14 +718,16 @@ class AudioController extends Controller
         | Jalankan Python
         |--------------------------------------------------------------------------
         */
-        $python = "python";
-
         $script = base_path(
             "python/detect_vocal.py"
         );
 
         $output = shell_exec(
-            "$python \"$script\" \"$path\""
+            escapeshellcmd($this->pythonBinary()) .
+                " " .
+                escapeshellarg($script) .
+                " " .
+                escapeshellarg($path)
         );
 
         if (!$output) {
@@ -785,15 +786,13 @@ class AudioController extends Controller
     {
         set_time_limit(300);
 
-        $python = "python";
-
         $script =
             base_path(
                 "python/recommendation.py"
             );
 
         $command =
-            $python . " " .
+            escapeshellcmd($this->pythonBinary()) . " " .
             escapeshellarg($script) . " " .
 
             intval($request->song_lowest) . " " .
@@ -922,12 +921,11 @@ class AudioController extends Controller
             ], 404);
         }
 
-        $python = 'python';
         $script = base_path('python/reference_melody.py');
 
         $command = sprintf(
             '%s %s %s %s %s 2>&1',
-            escapeshellcmd($python),
+            escapeshellcmd($this->pythonBinary()),
             escapeshellarg($script),
             escapeshellarg($fullPath),
             escapeshellarg((string) $validated['start_time']),
@@ -963,6 +961,11 @@ class AudioController extends Controller
                 (string) $request->input('title', '')
             )
         );
+    }
+
+    private function pythonBinary(): string
+    {
+        return (string) config('services.python.bin', 'python');
     }
 
     private function updateLaguFromDetection(
