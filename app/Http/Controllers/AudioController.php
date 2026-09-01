@@ -847,7 +847,43 @@ class AudioController extends Controller
             ) ?? [];
         }
 
-        $cache[$validated['filename']] = $validated['data'];
+        $filename = $validated['filename'];
+        $data = $validated['data'];
+
+        /*
+        |--------------------------------------------------------------------------
+        | Simpan hasil analisis
+        |--------------------------------------------------------------------------
+        |
+        | Jika filename belum ada:
+        |     simpan seperti format lama.
+        |
+        | Jika filename sudah ada:
+        |     ubah menjadi array dan tambahkan hasil baru.
+        |
+        | Dengan demikian hasil analisis sebelumnya tidak ditimpa.
+        |
+        */
+
+        if (!isset($cache[$filename])) {
+
+            $cache[$filename] = [
+                $data
+            ];
+        } elseif (isset($cache[$filename][0]) && is_array($cache[$filename][0])) {
+
+            $cache[$filename][] = $data;
+        } else {
+
+            // Format lama: satu object hasil analisis
+            // Pertahankan hasil lama lalu tambahkan hasil baru.
+            $oldData = $cache[$filename];
+
+            $cache[$filename] = [
+                $oldData,
+                $data
+            ];
+        }
 
         file_put_contents(
             $cacheFile,
@@ -855,7 +891,8 @@ class AudioController extends Controller
                 $cache,
                 JSON_PRETTY_PRINT |
                     JSON_UNESCAPED_UNICODE
-            )
+            ),
+            LOCK_EX
         );
 
         return response()->json([
