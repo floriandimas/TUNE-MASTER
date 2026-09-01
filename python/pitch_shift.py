@@ -107,7 +107,7 @@ base, ext = os.path.splitext(input_file)
 output = (
     base +
     f"_shifted_{int(semitone)}" +
-    ext
+    ".wav"
 )
 
 sf.write(
