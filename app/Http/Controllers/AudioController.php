@@ -110,6 +110,8 @@ class AudioController extends Controller
                 $rawOutput = implode("\n", $output);
                 $downloadResult = json_decode($rawOutput, true);
 
+                $fallbackError = trim((string) $output);
+
                 $downloadedPath = data_get($downloadResult, 'path', $fullPath);
 
                 if (!file_exists($downloadedPath)) {
@@ -246,7 +248,7 @@ class AudioController extends Controller
         $script = base_path('python/key_detection.py');
 
         $command = sprintf(
-            '%s %s %s',
+            '%s %s %s 2>&1',
             escapeshellcmd($this->pythonBinary()),
             escapeshellarg($script),
             escapeshellarg($fullPath)
@@ -261,6 +263,8 @@ class AudioController extends Controller
             !isset($data['success']) ||
             $data['success'] !== true
         ) {
+            $fallbackError = trim((string) $output);
+
             Log::error('Deteksi key gagal', [
                 'filename' => $filename,
                 'raw_output' => $output,
@@ -269,7 +273,9 @@ class AudioController extends Controller
             return response()->json([
                 'success' => false,
                 'error' => $data['error']
-                    ?? 'Gagal membaca hasil deteksi key.',
+                    ?? ($fallbackError !== ''
+                        ? $fallbackError
+                        : 'Gagal membaca hasil deteksi key.'),
             ], 500);
         }
 
@@ -727,7 +733,8 @@ class AudioController extends Controller
                 " " .
                 escapeshellarg($script) .
                 " " .
-                escapeshellarg($path)
+                escapeshellarg($path) .
+                " 2>&1"
         );
 
         if (!$output) {
@@ -805,7 +812,8 @@ class AudioController extends Controller
 
             escapeshellarg(
                 $request->song_key
-            );
+            ) .
+            " 2>&1";
 
         $output = shell_exec($command);
 
@@ -819,8 +827,12 @@ class AudioController extends Controller
             !$data ||
             !($data["success"] ?? false)
         ) {
+            $fallbackError = trim((string) $output);
+
             return response()->json([
-                "error" => "Recommendation gagal"
+                "error" => $fallbackError !== ''
+                    ? $fallbackError
+                    : "Recommendation gagal"
             ], 500);
         }
 
